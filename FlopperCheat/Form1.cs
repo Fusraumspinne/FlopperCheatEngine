@@ -18,11 +18,16 @@ namespace FlopperCheat
         private uint processId;
 
         private static List<nint> foundAddresses = [];
+        private List<nint> savedAddresses = [];
         private static nint selectedAddress = 0;
 
         private int currentPage = 1;
         private const int pageSize = 10;
         private int totalPages = 0;
+
+        private int savedCurrentPage = 1;
+        private const int savedPageSize = 5;
+        private int savedTotalPages = 0;
 
         public Form1()
         {
@@ -35,7 +40,18 @@ namespace FlopperCheat
             btnPrevPage.Enabled = (currentPage > 1);
             btnNextPage.Enabled = (currentPage < totalPages);
 
+            btnPrevPageSavedAddresses.Enabled = (savedCurrentPage > 1);
+            btnNextPageSavedAddresses.Enabled = (savedCurrentPage < savedTotalPages);
+
             btnNextScan.Enabled = false;
+
+            listAdresses.View = View.Details;
+            listAdresses.Columns.Add("Adresse", listAdresses.ClientSize.Width);
+            listAdresses.Scrollable = false;
+
+            listSavedAdresses.View = View.Details;
+            listSavedAdresses.Columns.Add("Gespeicherte Adresse", listSavedAdresses.ClientSize.Width);
+            listSavedAdresses.Scrollable = false;
 
             LoadProcessesDropDown();
         }
@@ -120,11 +136,6 @@ namespace FlopperCheat
 
         private void DisplayCurrentPage()
         {
-            listAdresses.View = View.Details;
-            listAdresses.Columns.Add("Adresse", listAdresses.ClientSize.Width);
-
-            listAdresses.Scrollable = false;
-
             listAdresses.Items.Clear();
 
             var pageItems = foundAddresses
@@ -175,7 +186,7 @@ namespace FlopperCheat
             btnPrevPage.Enabled = (currentPage > 1);
             btnNextPage.Enabled = (currentPage < totalPages);
         }
-        
+
         private void GetToPrevPage(object sender, EventArgs e)
         {
             if (currentPage > 1)
@@ -257,6 +268,109 @@ namespace FlopperCheat
             else
             {
                 MessageBox.Show("Ungültiger Wert im Eingabefeld");
+            }
+        }
+
+        private void btnSaveAddress_Click(object sender, MouseEventArgs e)
+        {
+            if (selectedAddress == nint.Zero)
+            {
+                MessageBox.Show("Keine Adresse ausgewählt.");
+                return;
+            }
+
+            if (savedAddresses.Contains(selectedAddress))
+            {
+                MessageBox.Show("Adresse bereits gespeichert.");
+                return;
+            }
+
+            savedAddresses.Add(selectedAddress);
+            DisplaySavedAddresses();
+            UpdateStatusLabelsSavedAddresses();
+        }
+
+        private void DisplaySavedAddresses()
+        {
+            listSavedAdresses.Items.Clear();
+
+            savedTotalPages = (int)Math.Ceiling(savedAddresses.Count / (double)savedPageSize);
+
+            var pageItems = savedAddresses
+                .Skip((savedCurrentPage - 1) * savedPageSize)
+                .Take(savedPageSize);
+
+            foreach (var addr in pageItems)
+            {
+                string hex = "0x" + addr.ToInt64().ToString("X8");
+                var item = new ListViewItem(hex);
+                listSavedAdresses.Items.Add(item);
+            }
+
+            btnPrevPageSavedAddresses.Enabled = (savedCurrentPage > 1);
+            btnNextPageSavedAddresses.Enabled = (savedCurrentPage < savedTotalPages);
+        }
+
+        private void btnSavedPrevPage_Click(object sender, EventArgs e)
+        {
+            if (savedCurrentPage > 1)
+            {
+                savedCurrentPage--;
+                DisplaySavedAddresses();
+                UpdateStatusLabelsSavedAddresses();
+            }
+        }
+
+        private void btnSavedNextPage_Click(object sender, EventArgs e)
+        {
+            if (savedCurrentPage < savedTotalPages)
+            {
+                savedCurrentPage++;
+                DisplaySavedAddresses();
+                UpdateStatusLabelsSavedAddresses();
+            }
+        }
+
+        private void UpdateStatusLabelsSavedAddresses()
+        {
+            labelSavedAddresses.Text = $"Gefundene Adressen: {savedAddresses.Count}";
+            labelPagesSavedAddresses.Text = $"Seite {savedCurrentPage} von {Math.Max(savedTotalPages, 1)}";
+        }
+
+        private void listSavedAdresses_DoubleClick(object sender, EventArgs e)
+        {
+            if (listSavedAdresses.SelectedItems.Count > 0)
+            {
+                string hex = listSavedAdresses.SelectedItems[0].Text.Replace("0x", "");
+                if (long.TryParse(hex, System.Globalization.NumberStyles.HexNumber, null, out long addr))
+                {
+                    nint addressToRemove = new(addr);
+                    savedAddresses.Remove(addressToRemove);
+
+                    savedCurrentPage = Math.Min(savedCurrentPage,
+                        Math.Max((int)Math.Ceiling(savedAddresses.Count / (double)savedPageSize), 1));
+
+                    DisplaySavedAddresses();
+                    UpdateStatusLabelsSavedAddresses();
+                }
+            }
+        }
+
+        private void listSavedAdresses_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (listSavedAdresses.SelectedItems.Count > 0)
+            {
+                var selectedItem = listSavedAdresses.SelectedItems[0];
+                string hexString = selectedItem.Text.Replace("0x", "");
+
+                if (long.TryParse(hexString, System.Globalization.NumberStyles.HexNumber, null, out long address))
+                {
+                    selectedAddress = new nint(address);
+                }
+            }
+            else
+            {
+                selectedAddress = nint.Zero;
             }
         }
     }

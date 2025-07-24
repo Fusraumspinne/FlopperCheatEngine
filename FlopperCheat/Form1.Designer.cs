@@ -46,6 +46,11 @@
             btnWrite = new System.Windows.Forms.Button();
             btnNextPage = new System.Windows.Forms.Button();
             btnPrevPage = new System.Windows.Forms.Button();
+            listSavedAdresses = new System.Windows.Forms.ListView();
+            labelSavedAddresses = new System.Windows.Forms.Label();
+            btnNextPageSavedAddresses = new System.Windows.Forms.Button();
+            btnPrevPageSavedAddresses = new System.Windows.Forms.Button();
+            labelPagesSavedAddresses = new System.Windows.Forms.Label();
             SuspendLayout();
             // 
             // comboBoxProcessesList
@@ -150,10 +155,11 @@
             listAdresses.Location = new System.Drawing.Point(14, 125);
             listAdresses.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             listAdresses.Name = "listAdresses";
-            listAdresses.Size = new System.Drawing.Size(354, 219);
+            listAdresses.Size = new System.Drawing.Size(354, 217);
             listAdresses.TabIndex = 10;
             listAdresses.UseCompatibleStateImageBehavior = false;
             listAdresses.SelectedIndexChanged += listAdresses_SelectedIndexChanged;
+            listAdresses.MouseDoubleClick += btnSaveAddress_Click;
             // 
             // labelPages
             // 
@@ -240,11 +246,71 @@
             btnPrevPage.UseVisualStyleBackColor = true;
             btnPrevPage.Click += GetToPrevPage;
             // 
+            // listSavedAdresses
+            // 
+            listSavedAdresses.FullRowSelect = true;
+            listSavedAdresses.GridLines = true;
+            listSavedAdresses.Location = new System.Drawing.Point(15, 471);
+            listSavedAdresses.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            listSavedAdresses.Name = "listSavedAdresses";
+            listSavedAdresses.Size = new System.Drawing.Size(354, 122);
+            listSavedAdresses.TabIndex = 19;
+            listSavedAdresses.UseCompatibleStateImageBehavior = false;
+            listSavedAdresses.SelectedIndexChanged += listSavedAdresses_SelectedIndexChanged;
+            listSavedAdresses.DoubleClick += listSavedAdresses_DoubleClick;
+            // 
+            // labelSavedAddresses
+            // 
+            labelSavedAddresses.AutoSize = true;
+            labelSavedAddresses.Location = new System.Drawing.Point(10, 453);
+            labelSavedAddresses.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            labelSavedAddresses.Name = "labelSavedAddresses";
+            labelSavedAddresses.Size = new System.Drawing.Size(138, 15);
+            labelSavedAddresses.TabIndex = 20;
+            labelSavedAddresses.Text = "Gespeicherte Adressen: 0";
+            // 
+            // btnNextPageSavedAddresses
+            // 
+            btnNextPageSavedAddresses.Location = new System.Drawing.Point(55, 597);
+            btnNextPageSavedAddresses.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnNextPageSavedAddresses.Name = "btnNextPageSavedAddresses";
+            btnNextPageSavedAddresses.Size = new System.Drawing.Size(40, 27);
+            btnNextPageSavedAddresses.TabIndex = 23;
+            btnNextPageSavedAddresses.Text = "->";
+            btnNextPageSavedAddresses.UseVisualStyleBackColor = true;
+            btnNextPageSavedAddresses.Click += btnSavedNextPage_Click;
+            // 
+            // btnPrevPageSavedAddresses
+            // 
+            btnPrevPageSavedAddresses.Location = new System.Drawing.Point(14, 597);
+            btnPrevPageSavedAddresses.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnPrevPageSavedAddresses.Name = "btnPrevPageSavedAddresses";
+            btnPrevPageSavedAddresses.Size = new System.Drawing.Size(40, 27);
+            btnPrevPageSavedAddresses.TabIndex = 22;
+            btnPrevPageSavedAddresses.Text = "<-";
+            btnPrevPageSavedAddresses.UseVisualStyleBackColor = true;
+            btnPrevPageSavedAddresses.Click += btnSavedPrevPage_Click;
+            // 
+            // labelPagesSavedAddresses
+            // 
+            labelPagesSavedAddresses.AutoSize = true;
+            labelPagesSavedAddresses.Location = new System.Drawing.Point(103, 603);
+            labelPagesSavedAddresses.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            labelPagesSavedAddresses.Name = "labelPagesSavedAddresses";
+            labelPagesSavedAddresses.Size = new System.Drawing.Size(73, 15);
+            labelPagesSavedAddresses.TabIndex = 21;
+            labelPagesSavedAddresses.Text = "Seite 1 von 0";
+            // 
             // Form1
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            ClientSize = new System.Drawing.Size(554, 451);
+            ClientSize = new System.Drawing.Size(554, 636);
+            Controls.Add(btnNextPageSavedAddresses);
+            Controls.Add(btnPrevPageSavedAddresses);
+            Controls.Add(labelPagesSavedAddresses);
+            Controls.Add(labelSavedAddresses);
+            Controls.Add(listSavedAdresses);
             Controls.Add(btnNextPage);
             Controls.Add(btnPrevPage);
             Controls.Add(btnWrite);
@@ -294,6 +360,11 @@
         private System.Windows.Forms.Button btnWrite;
         private System.Windows.Forms.Button btnNextPage;
         private System.Windows.Forms.Button btnPrevPage;
+        private System.Windows.Forms.ListView listSavedAdresses;
+        private System.Windows.Forms.Label labelSavedAddresses;
+        private System.Windows.Forms.Button btnNextPageSavedAddresses;
+        private System.Windows.Forms.Button btnPrevPageSavedAddresses;
+        private System.Windows.Forms.Label labelPagesSavedAddresses;
     }
 }
 
